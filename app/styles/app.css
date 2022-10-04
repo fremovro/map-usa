@@ -1,6 +1,20 @@
 .leaflet-container {
     position: absolute;
+    top: 0%;
     left: 10%;
-    width: 80%;
+    width: 90%;
     height: 100%;
+}
+.state-panel {
+    position: absolute;
+    left: 3%;
+    top: 10%;
+    width: 10%;
+    height: 90%;
+}
+.state-panel-header {
+    position: absolute;
+    top: 0%;
+    width: 10%;
+    height: 90%;
 }

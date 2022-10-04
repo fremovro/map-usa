@@ -5,5 +5,5 @@ export default DS.Model.extend({
   foundation: DS.attr('string'),
   capital: DS.attr('string'),
   geometryType: DS.attr('string'),
-  coordinates: DS.attr('array')
+  coordinates: DS.attr('array'),
 });

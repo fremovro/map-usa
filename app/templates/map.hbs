@@ -1,11 +1,27 @@
+{{!-- <div class="state-panel-header">
+  <div style="text-align: center">
+    Штаты:
+  </div>
+  <div class="state-panel">
+
+    {{#each model as |state|}}
+      <a>{{state.name}}</a>
+    {{/each}}
+  </div>
+</div> --}}
+
 <LeafletMap @lat={{this.lat}} @lng={{this.lng}} @zoom={{this.zoom}} as |layers|>
-    <layers.tile @url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"/>
+    {{!-- <layers.tile @url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"/> --}}
 
     {{#each this.states as |state|}}
-      <layers.polygon @locations={{state}} @color=rgb(150,255,150) as |polygon|>
-        <polygon.tooltip @sticky={{true}}>
-        </polygon.tooltip>
+      <layers.polygon @locations={{state.coordinates}} @color=rgb(150,255,150) @sticky={{true}} @onClick={{action "center"}} as |polygon|>
+        <polygon.popup @autoPan={{false}}>
+          Штат: {{state.name}}<br>
+          Столица: {{state.capital}}<br>
+          Дата основания: {{state.foundation}}
+          <layers.polygon @locations={{state.coordinates}} @color=rgb(50,255,50)>
+          </layers.polygon>
+        </polygon.popup>
       </layers.polygon>
     {{/each}}
-
 </LeafletMap>
