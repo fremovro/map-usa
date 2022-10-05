@@ -23,7 +23,7 @@
   </div>
 {{/if}}
 
-<LeafletMap @lat={{this.lat}} @lng={{this.lng}} @zoom={{this.zoom}} @onMouse={{action "alert"}} as |layers|>
+<LeafletMap @lat={{this.lat}} @lng={{this.lng}} @zoom={{this.zoom}} as |layers|>
     <layers.tile @url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"/>
     
     {{#each this.states as |state|}}

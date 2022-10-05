@@ -51,7 +51,7 @@ export default Controller.extend({
     return states;
   }),
 
-  async setAverageLngLat(state) {
+  setAverageLngLat(state) {
     let maxLng = -1000, minLng = 1000, maxLat = -1000, minLat = 1000, averageLng=this.lat, averageLat=this.lng;
     if(state.geometryType == 'Polygon') {
       state.coordinates.forEach(cState =>{
@@ -91,9 +91,6 @@ export default Controller.extend({
       let tempState = get(this, 'states').find(({ name }) => name == state.name);
       set(this, 'chosenState', tempState);
       this.setAverageLngLat(tempState);
-    },
-    alert() {
-      console.log('alert');
     }
   },
 });
