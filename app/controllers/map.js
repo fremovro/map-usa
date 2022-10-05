@@ -5,7 +5,7 @@ import { get, set } from '@ember/object';
 export default Controller.extend({
   lat: 38.54043108357777,
   lng: -98.68178915360373,
-  zoom: 4.5,
+  zoom: 4,
 
   states: computed('model', function () {
     let model = this.model.toArray();
@@ -51,7 +51,7 @@ export default Controller.extend({
     return states;
   }),
 
-  setAverageLngLat(state) {
+  async setAverageLngLat(state) {
     let maxLng = -1000, minLng = 1000, maxLat = -1000, minLat = 1000, averageLng=this.lat, averageLat=this.lng;
     if(state.geometryType == 'Polygon') {
       state.coordinates.forEach(cState =>{
@@ -77,6 +77,9 @@ export default Controller.extend({
     }
     set(this, 'lat', averageLat);
     set(this, 'lng', averageLng);
+    setTimeout(()=>{
+      set(this, 'zoom', 5);
+    }, 1);
   },
 
   actions: {
@@ -88,6 +91,9 @@ export default Controller.extend({
       let tempState = get(this, 'states').find(({ name }) => name == state.name);
       set(this, 'chosenState', tempState);
       this.setAverageLngLat(tempState);
+    },
+    alert() {
+      console.log('alert');
     }
   },
 });

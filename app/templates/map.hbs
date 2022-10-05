@@ -9,23 +9,27 @@
 
 {{#if chosenState}}
   <div class="state-information-panel">
-    <div style="text-align: center;">
-      {{chosenState.name}} <br>
+    <div class="state-information-panel-header">
+      <div style="text-align: center;">
+        {{chosenState.name}} <br>
+      </div>
     </div>
-    <div style="padding-left: 5%;">
-      Столица: {{chosenState.capital}} <br>
-      Дата основания: {{chosenState.foundation}}
+    <div class="state-information-panel-body">
+      <div style="padding-left: 5%;">
+        Столица: {{chosenState.capital}} <br>
+        Дата основания: {{chosenState.foundation}}
+      </div>
     </div>
   </div>
 {{/if}}
 
-<LeafletMap @lat={{this.lat}} @lng={{this.lng}} @zoom={{this.zoom}} as |layers|>
+<LeafletMap @lat={{this.lat}} @lng={{this.lng}} @zoom={{this.zoom}} @onMouse={{action "alert"}} as |layers|>
     <layers.tile @url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"/>
     
     {{#each this.states as |state|}}
         <layers.polygon @color=rgb(150,255,150) @locations={{state.coordinates}} @sticky={{true}} @onClick={{action "choseStateIntoClick" state}} as |polygon|>
           {{#if chosenState}}
-            <layers.polygon @locations={{chosenState.coordinates}} @color=rgb(50,255,50)>
+            <layers.polygon @locations={{chosenState.coordinates}} @color=rgb(100,255,100)>
             </layers.polygon>
           {{/if}}
         </layers.polygon>
