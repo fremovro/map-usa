@@ -1,20 +1,33 @@
 .leaflet-container {
     position: absolute;
+    z-index: 1;
     top: 0%;
-    left: 10%;
-    width: 90%;
+    left: 0%;
+    width: 100%;
     height: 100%;
 }
 .state-panel {
     position: absolute;
-    left: 3%;
+    left: 30%;
     top: 10%;
     width: 10%;
     height: 90%;
 }
 .state-panel-header {
     position: absolute;
+    z-index: 2;
     top: 0%;
-    width: 10%;
-    height: 90%;
+    left: 80%;
+    width: 19%;
+    height: 10%;
+}
+.state-information-panel {
+    position: absolute;
+    background-color: white;
+    border-radius: 5px;
+    z-index: 2;
+    top: 65%;
+    left: 1%;
+    width: 25%;
+    height: 32%;
 }

@@ -1,27 +1,33 @@
-{{!-- <div class="state-panel-header">
+<div class="state-panel-header">
   <div style="text-align: center">
-    Штаты:
+    Штат:
   </div>
-  <div class="state-panel">
+  {{#power-select onChange=(action "choseStateIntoSelect") options=this.states selected=chosenState searchEnabled=true as |state|}}
+      {{state.name}}
+  {{/power-select}}
+</div>
 
-    {{#each model as |state|}}
-      <a>{{state.name}}</a>
-    {{/each}}
+{{#if chosenState}}
+  <div class="state-information-panel">
+    <div style="text-align: center;">
+      {{chosenState.name}} <br>
+    </div>
+    <div style="padding-left: 5%;">
+      Столица: {{chosenState.capital}} <br>
+      Дата основания: {{chosenState.foundation}}
+    </div>
   </div>
-</div> --}}
+{{/if}}
 
 <LeafletMap @lat={{this.lat}} @lng={{this.lng}} @zoom={{this.zoom}} as |layers|>
-    {{!-- <layers.tile @url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"/> --}}
-
+    <layers.tile @url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"/>
+    
     {{#each this.states as |state|}}
-      <layers.polygon @locations={{state.coordinates}} @color=rgb(150,255,150) @sticky={{true}} @onClick={{action "center"}} as |polygon|>
-        <polygon.popup @autoPan={{false}}>
-          Штат: {{state.name}}<br>
-          Столица: {{state.capital}}<br>
-          Дата основания: {{state.foundation}}
-          <layers.polygon @locations={{state.coordinates}} @color=rgb(50,255,50)>
-          </layers.polygon>
-        </polygon.popup>
-      </layers.polygon>
+        <layers.polygon @color=rgb(150,255,150) @locations={{state.coordinates}} @sticky={{true}} @onClick={{action "choseStateIntoClick" state}} as |polygon|>
+          {{#if chosenState}}
+            <layers.polygon @locations={{chosenState.coordinates}} @color=rgb(50,255,50)>
+            </layers.polygon>
+          {{/if}}
+        </layers.polygon>
     {{/each}}
 </LeafletMap>

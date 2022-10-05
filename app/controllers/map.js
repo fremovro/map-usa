@@ -1,5 +1,4 @@
 import Controller from '@ember/controller';
-import { tracked } from '@glimmer/tracking';
 import { computed } from '@ember/object';
 import { get, set } from '@ember/object';
 
@@ -13,7 +12,6 @@ export default Controller.extend({
     let states = [];
 
     model.forEach((state) => {
-      console.log(state.name);
       if (state.geometryType == 'Polygon') {
         let temp = {
           coordinates: state.coordinates[0].map((r) => ({
@@ -23,21 +21,25 @@ export default Controller.extend({
           name: state.name,
           capital: state.capital,
           foundation: state.foundation,
+          geometryType: state.geometryType,
         };
         states.push(temp);
       } else if (state.geometryType == 'MultiPolygon') {
+        let tempCoordinates = [];
         for (var index = 0; index < state.coordinates.length; index++) {
-          let temp = {
-            coordinates: state.coordinates[index][0].map((r) => ({
-              lat: r[1],
-              lng: r[0],
-            })),
-            name: state.name,
-            capital: state.capital,
-            foundation: state.foundation,
-          };
-          states.push(temp);
+          tempCoordinates.push(state.coordinates[index][0].map((r) => ({
+            lat: r[1],
+            lng: r[0],
+          })));
         }
+        let temp = {
+          coordinates: tempCoordinates,
+          name: state.name,
+          capital: state.capital,
+          foundation: state.foundation,
+          geometryType: state.geometryType
+        };
+        states.push(temp);
       }
     });
 
@@ -46,15 +48,46 @@ export default Controller.extend({
       state.length = state.length - 1;
     });
 
-    console.log(states);
     return states;
   }),
 
+  setAverageLngLat(state) {
+    let maxLng = -1000, minLng = 1000, maxLat = -1000, minLat = 1000, averageLng=this.lat, averageLat=this.lng;
+    if(state.geometryType == 'Polygon') {
+      state.coordinates.forEach(cState =>{
+        if(cState.lng > maxLng) maxLng = cState.lng; 
+        if(cState.lng < minLng) minLng = cState.lng;
+        if(cState.lat > maxLat) maxLat = cState.lat; 
+        if(cState.lat < minLat) minLat = cState.lat;
+      })
+      averageLng = (minLng - maxLng) / 2 + maxLng;
+      averageLat = (maxLat - minLat) / 2 + minLat;
+    }
+    else if(state.geometryType == 'MultiPolygon') {
+      for (var index = 0; index < state.coordinates.length; index++) {
+        state.coordinates[index].forEach(cState =>{
+          if(cState.lng > maxLng) maxLng = cState.lng; 
+          if(cState.lng < minLng) minLng = cState.lng;
+          if(cState.lat > maxLat) maxLat = cState.lat; 
+          if(cState.lat < minLat) minLat = cState.lat;
+        });
+      }
+      averageLng = (minLng - maxLng) / 2 + maxLng;
+      averageLat = (maxLat - minLat) / 2 + minLat;
+    }
+    set(this, 'lat', averageLat);
+    set(this, 'lng', averageLng);
+  },
+
   actions: {
-    center(e) {
-      set(this, 'lat', e.latlng.lat);
-      set(this, 'lng', e.latlng.lng);
-      // set(this, 'zoom', 6);
+    choseStateIntoClick(state, e) {
+      set(this, 'chosenState', state);
+      this.setAverageLngLat(state);
     },
+    choseStateIntoSelect(state, e) {
+      let tempState = get(this, 'states').find(({ name }) => name == state.name);
+      set(this, 'chosenState', tempState);
+      this.setAverageLngLat(tempState);
+    }
   },
 });
