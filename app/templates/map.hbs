@@ -2,23 +2,19 @@
   <div style="text-align: center">
     Штат:
   </div>
-  {{#power-select onChange=(action "choseStateIntoSelect") options=this.states selected=chosenState searchEnabled=true as |state|}}
+  <PowerSelect @onChange={{action "choseStateIntoSelect"}} @options={{this.states}} @selected={{chosenState}} @searchEnabled={{true}} as |state|>
       {{state.name}}
-  {{/power-select}}
+  </PowerSelect>
 </div>
 
 {{#if chosenState}}
   <div class="state-information-panel">
-    <div class="state-information-panel-header">
-      <div style="text-align: center;">
-        {{chosenState.name}} <br>
-      </div>
+    <div style="text-align: center; font-weight: bold;">
+        {{chosenState.name}}<br>
     </div>
-    <div class="state-information-panel-body">
-      <div style="padding-left: 5%;">
+    <div style="padding-left: 5%;">
         Столица: {{chosenState.capital}} <br>
         Дата основания: {{chosenState.foundation}}
-      </div>
     </div>
   </div>
 {{/if}}

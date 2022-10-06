@@ -27,17 +27,19 @@ export default Controller.extend({
       } else if (state.geometryType == 'MultiPolygon') {
         let tempCoordinates = [];
         for (var index = 0; index < state.coordinates.length; index++) {
-          tempCoordinates.push(state.coordinates[index][0].map((r) => ({
-            lat: r[1],
-            lng: r[0],
-          })));
+          tempCoordinates.push(
+            state.coordinates[index][0].map((r) => ({
+              lat: r[1],
+              lng: r[0],
+            }))
+          );
         }
         let temp = {
           coordinates: tempCoordinates,
           name: state.name,
           capital: state.capital,
           foundation: state.foundation,
-          geometryType: state.geometryType
+          geometryType: state.geometryType,
         };
         states.push(temp);
       }
@@ -52,24 +54,28 @@ export default Controller.extend({
   }),
 
   setAverageLngLat(state) {
-    let maxLng = -1000, minLng = 1000, maxLat = -1000, minLat = 1000, averageLng=this.lat, averageLat=this.lng;
-    if(state.geometryType == 'Polygon') {
-      state.coordinates.forEach(cState =>{
-        if(cState.lng > maxLng) maxLng = cState.lng; 
-        if(cState.lng < minLng) minLng = cState.lng;
-        if(cState.lat > maxLat) maxLat = cState.lat; 
-        if(cState.lat < minLat) minLat = cState.lat;
-      })
+    let maxLng = -1000,
+      minLng = 1000,
+      maxLat = -1000,
+      minLat = 1000,
+      averageLng = this.lat,
+      averageLat = this.lng;
+    if (state.geometryType == 'Polygon') {
+      state.coordinates.forEach((cState) => {
+        if (cState.lng > maxLng) maxLng = cState.lng;
+        if (cState.lng < minLng) minLng = cState.lng;
+        if (cState.lat > maxLat) maxLat = cState.lat;
+        if (cState.lat < minLat) minLat = cState.lat;
+      });
       averageLng = (minLng - maxLng) / 2 + maxLng;
       averageLat = (maxLat - minLat) / 2 + minLat;
-    }
-    else if(state.geometryType == 'MultiPolygon') {
+    } else if (state.geometryType == 'MultiPolygon') {
       for (var index = 0; index < state.coordinates.length; index++) {
-        state.coordinates[index].forEach(cState =>{
-          if(cState.lng > maxLng) maxLng = cState.lng; 
-          if(cState.lng < minLng) minLng = cState.lng;
-          if(cState.lat > maxLat) maxLat = cState.lat; 
-          if(cState.lat < minLat) minLat = cState.lat;
+        state.coordinates[index].forEach((cState) => {
+          if (cState.lng > maxLng) maxLng = cState.lng;
+          if (cState.lng < minLng) minLng = cState.lng;
+          if (cState.lat > maxLat) maxLat = cState.lat;
+          if (cState.lat < minLat) minLat = cState.lat;
         });
       }
       averageLng = (minLng - maxLng) / 2 + maxLng;
@@ -77,9 +83,11 @@ export default Controller.extend({
     }
     set(this, 'lat', averageLat);
     set(this, 'lng', averageLng);
-    setTimeout(()=>{
-      set(this, 'zoom', 5);
-    }, 1);
+    setTimeout(() => {
+      this.zoom == 4
+        ? set(this, 'zoom', this.zoom * 1.2)
+        : set(this, 'zoom', this.zoom * (1 + Math.pow(0.1, 10)));
+    }, 300);
   },
 
   actions: {
@@ -88,7 +96,7 @@ export default Controller.extend({
       this.setAverageLngLat(state);
     },
     choseStateIntoSelect(state, e) {
-      let tempState = get(this, 'states').find(({ name }) => name == state.name);
+      let tempState = this.states.find(({ name }) => name == state.name);
       set(this, 'chosenState', tempState);
       this.setAverageLngLat(tempState);
     }
